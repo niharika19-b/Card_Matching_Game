@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Card Matching Game</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="game-container">
+    <h1>Card Matching Game</h1>
+
+    <div class="input-section">
+      <label for="cardCountInput">Enter even number of cards (4–100):</label>
+      <input type="number" id="cardCountInput" placeholder="e.g. 12" />
+      <button id="startBtn">Start Game</button>
+      <p id="errorMsg"></p>
+    </div>
+
+    <div id="scoreBoard">Moves: <span id="score">0</span></div>
+    <div id="gameBoard" class="board"></div>
+    <button id="restartBtn" class="hidden"> Restart</button>
+  </div>
+
+  <script>
+    const startBtn = document.getElementById('startBtn');
+    const restartBtn = document.getElementById('restartBtn');
+    const cardCountInput = document.getElementById('cardCountInput');
+    const errorMsg = document.getElementById('errorMsg');
+    const gameBoard = document.getElementById('gameBoard');
+    const scoreDisplay = document.getElementById('score');
+
+    let firstCard = null;
+    let secondCard = null;
+    let lockBoard = false;
+    let matchedCount = 0;
+    let totalPairs = 0;
+    let score = 0;
+
+    cardCountInput.addEventListener('input', () => {
+      const count = parseInt(cardCountInput.value);
+      if (isNaN(count) || count < 4 || count > 100 || count % 2 !== 0) {
+        errorMsg.textContent = 'Enter an even number between 4 and 100.';
+      } else {
+        errorMsg.textContent = '';
+      }
+    });
+
+    startBtn.addEventListener('click', () => {
+      const count = parseInt(cardCountInput.value);
+      if (isNaN(count) || count < 4 || count > 100 || count % 2 !== 0) {
+        errorMsg.textContent = 'Invalid input. Enter even number between 4–100.';
+        return;
+      }
+      errorMsg.textContent = '';
+      startGame(count);
+    });
+
+    restartBtn.addEventListener('click', () => {
+      location.reload();
+    });
+
+    function startGame(cardCount) {
+      restartBtn.classList.add('hidden');
+      gameBoard.innerHTML = '';
+      matchedCount = 0;
+      score = 0;
+      scoreDisplay.textContent = score;
+      totalPairs = cardCount / 2;
+
+      const values = generateCardValues(cardCount);
+      gameBoard.style.gridTemplateColumns = `repeat(${Math.min(10, cardCount / 4)}, 1fr)`;
+
+      values.forEach((value) => {
+        const card = createCard(value);
+        gameBoard.appendChild(card);
+      });
+    }
+
+    function generateCardValues(count) {
+      const pairs = [];
+      while (pairs.length < count / 2) {
+        const num = Math.floor(Math.random() * 100) + 1;
+        if (!pairs.includes(num)) pairs.push(num);
+      }
+      const fullSet = [...pairs, ...pairs];
+      return shuffle(fullSet);
+    }
+
+    function shuffle(array) {
+      return array.sort(() => Math.random() - 0.5);
+    }
+
+    function createCard(value) {
+      const card = document.createElement('div');
+      card.classList.add('card');
+      card.innerHTML = `
+        <div class="card-inner">
+          <div class="card-front">${value}</div>
+          <div class="card-back">?</div>
+        </div>
+      `;
+      card.dataset.value = value;
+      card.addEventListener('click', () => flipCard(card));
+      return card;
+    }
+
+    function flipCard(card) {
+      if (lockBoard || card.classList.contains('flip') || card === firstCard) return;
+
+      card.classList.add('flip');
+
+      if (!firstCard) {
+        firstCard = card;
+        return;
+      }
+
+      secondCard = card;
+      lockBoard = true;
+
+      score++;
+      scoreDisplay.textContent = score;
+
+      const isMatch = firstCard.dataset.value === secondCard.dataset.value;
+
+      if (isMatch) {
+        firstCard.classList.add('matched');
+        secondCard.classList.add('matched');
+        matchedCount++;
+        resetTurn();
+
+        if (matchedCount === totalPairs) {
+          setTimeout(() => {
+            alert(`🎉 You matched all pairs in ${score} moves!`);
+            restartBtn.classList.remove('hidden');
+          }, 500);
+        }
+      } else {
+        setTimeout(() => {
+          alert('❌ Mismatch! Restarting game...');
+          location.reload();
+        }, 300);
+      }
+    }
+
+    function resetTurn() {
+      [firstCard, secondCard] = [null, null];
+      lockBoard = false;
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #ff6ec4, #7873f5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.game-container {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  max-width: 1000px;
+  width: 100%;
+  transition: transform 0.5s ease;
+  perspective: 1000px;
+}
+
+h1 {
+  color: #480d61;
+  margin-bottom: 20px;
+  font-size: 2rem;
+}
+
+.input-section {
+  margin-bottom: 20px;
+}
+
+label {
+  color: #fff;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 8px;
+}
+
+input[type="number"] {
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 10px;
+  border: none;
+  width: 100%;
+  max-width: 300px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  margin-top: 10px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  background-color: #fff;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #eee;
+}
+
+#errorMsg {
+  margin-top: 10px;
+  color: #ffdddd;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+#scoreBoard {
+  font-size: 20px;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.board {
+ display: grid;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.card {
+  width: 50px;
+  height: 65px;
+  cursor: pointer;
+  perspective: 1000px;
+  border-radius: 7px;
+  position: relative;
+}
+
+.card-inner {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+.card.flip .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-front,
+.card-back {
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 6px;
+  backface-visibility: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.card-front {
+  background-color: #fff;
+  color: #333;
+  transform: rotateY(180deg);
+  font-size: 12px;
+}
+
+.card-back {
+  background-color: #444;
+  color: #fff;
+  font-size: 12px;
+}
+
+.card.matched .card-front {
+  background-color: #4caf50;
+  color: white;
+}
+
+.card.matched {
+  cursor: default;
+}
+
+.hidden {
+  display: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  input[type="number"],
+  button {
+    font-size: 14px;
+  }
+
+  .board {
+    grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+  }}
